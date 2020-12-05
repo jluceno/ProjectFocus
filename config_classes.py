@@ -1,24 +1,30 @@
 import enum
 
 
+# declare enums to select from (goal or uncontrollable)
+# api_enum = nike, something, etc.
+# commands_enum = add, remove, edit
+# graph_type_enum = bar, pie, line, display_value
+
 # pycharm asks for CamelClass
-class CommandWidget(enum.Enum):
+class CommandMessage:
     def __init__(self, api_name):
         self.api_name = api_name
 
-    # members for enum implementation
-    add = 55
-    remove = 66
-    edit = 77
+    class ApiEnum(enum.Enum):
+        nike = 1
+        samsung = 2
+        google_weather = 3
 
-    def add_widget(self):
-        print(self.add)
+    class GraphType(enum.Enum):
+        bar = 1
+        line = 2
+        pie = 3
+        simple = 4
 
-    def remove_widget(self):
-        print(self.remove)
-
-    def edit_widget(self):
-        print(self.edit)
+    class Command(enum.Enum):
+        add = 1
+        remove = 2
 
 
 class Goal:

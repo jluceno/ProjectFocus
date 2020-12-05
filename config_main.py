@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow
 import sys
 
-from config_classes import CommandWidget
+from config_classes import CommandMessage
 
 
 class MainWindow(QMainWindow):
@@ -22,7 +22,20 @@ class MainWindow(QMainWindow):
         self.setGeometry(200, 200, 900, 600)
 
         self.setWindowTitle("hey")
+
+        # call config function
         self.config()
+
+    # receive from josh
+    # pass in function pointer of self.command_handler
+    def register_command(self):
+
+        # josh is sending me command_handler function
+        print(1)
+        # takes commandmessage as an argument
+        # call commandhandler, pass in commandmessage object
+
+        # whenever i want to issue a command, call the function josh passed me
 
     # modify the objects initialized in init
     def config(self):
@@ -40,11 +53,19 @@ class MainWindow(QMainWindow):
 
         # TODO config checklist1
 
-        # test config_classes
-        print(CommandWidget.add.value)
 
-        test = CommandWidget(77)
-        test.remove_widget()
+        # test config_classes
+
+        # replace 'nike' with 'input'
+        test_name = 1
+
+        print(CommandMessage.ApiEnum(test_name).name)
+
+        # pass api_name as only parameter for CommandMessage
+        test = CommandMessage("nike")
+
+        # print object's commands for CommandEnum
+        print(test.ApiEnum.samsung.name)
 
         # pass testCommandWidget object to Josh's TaskManager.py function()
         # function pointer(?) will be passed to config_main.py
