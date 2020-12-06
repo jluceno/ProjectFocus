@@ -1,51 +1,40 @@
 # settings - project - python interpreter - pyqt5
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QApplication, QMainWindow
+
 import sys
+from PyQt5.QtWidgets import QComboBox, QWidget, QStackedWidget, QHBoxLayout, QFormLayout, QLineEdit, \
+    QRadioButton, QLabel, QApplication, QVBoxLayout
 
 from config_classes import CommandMessage
 
 
-class MainWindow(QMainWindow):
+class MainWindow(QWidget):
 
     def __init__(self):
         super(MainWindow, self).__init__()
 
-        # initialize widgets inside init method
-        self.b1 = QtWidgets.QPushButton(self)
+        self.setWindowTitle("Config UI")
 
-        self.label1 = QtWidgets.QLabel(self)
-        self.dd1 = QtWidgets.QComboBox(self)
+        self.dd1 = QComboBox(self)
 
-        self.label2 = QtWidgets.QLabel(self)
+        self.dd1.insertItem(0, 'Nike')
+        self.dd1.insertItem(1, 'Google Weather')
 
-        self.setGeometry(200, 200, 900, 600)
+        self.stack1 = QWidget()
+        self.stack2 = QWidget()
 
-        self.setWindowTitle("hey")
+        self.stack1ui()
+        self.stack2ui()
 
-        # call config function
-        self.config()
+        self.Stack = QStackedWidget(self)
+        self.Stack.addWidget(self.stack1)
+        self.Stack.addWidget(self.stack2)
 
-        # Call to send a command
-        self.command_function = None
+        box = QHBoxLayout(self)
+        box.addWidget(self.dd1)
+        box.addWidget(self.Stack)
 
-    # modify the objects initialized in init
-    def config(self):
-
-        # config button 1
-        self.b1.setText("press to send dictionary")
-        self.b1.clicked.connect(self.clicked)
-        self.b1.setGeometry(300, 0, 150, 30)
-
-        # config line 1 and dropdown 1
-        self.label1.setText("select api")
-        self.label1.move(55, 50)
-        self.dd1.setGeometry(200, 50, 250, 30)
-        self.dd1.addItems(["nike", "google_weather"])
-
-        # TODO config checklist1
-
-
+        self.dd1.currentIndexChanged.connect(self.display)
+        self.setGeometry(300, 300, 600, 300)
 
         # test config_classes
 
@@ -67,22 +56,53 @@ class MainWindow(QMainWindow):
         # **list => not edited everywhere
         test = CommandMessage(**example_dict)
 
-    def clicked(self):
-        self.b1.setText("dictionary sent")
+        # Call to send a command
+        self.command_function = None
+
+    def stack1ui(self):
+        layout = QFormLayout()
+        layout.addRow("API Name", QLineEdit())
+
+        command = QHBoxLayout()
+        command.addWidget(QRadioButton("Add"))
+        command.addWidget(QRadioButton("Remove"))
+        layout.addRow(QLabel("Add/Remove"), command)
+
+        layout.addRow("Graph Type", QLineEdit())
+        layout.addRow("Data Type", QLineEdit())
+        self.stack1.setLayout(layout)
+
+    def stack2ui(self):
+        layout = QFormLayout()
+        layout.addRow("API Name", QLineEdit())
+
+        command = QHBoxLayout()
+        command.addWidget(QRadioButton("Add"))
+        command.addWidget(QRadioButton("Remove"))
+        layout.addRow(QLabel("Add/Remove"), command)
+
+        layout.addRow("Graph Type", QLineEdit())
+        layout.addRow("Data Type", QLineEdit())
+        self.stack2.setLayout(layout)
+
+    def display(self, i):
+        self.Stack.setCurrentIndex(i)
 
     def register_command_func(self, command_function):
         self.command_function = command_function
         return
 
+
 def window():
     app = QApplication(sys.argv)
     win = MainWindow()
+    win.show()
 
     # josh sends me a function to call if i want to run a command
     # josh will call win.register_command_function(function*(ofTypeCommandWidget))
 
-    win.show()
-    sys.exit(app.exec())
+    sys.exit(app.exec_())
 
 
-window()
+if __name__ == '__main__':
+    window()
