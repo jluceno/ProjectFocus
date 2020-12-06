@@ -1,10 +1,12 @@
 from config_model import TaskManagerConfigModel
 from os import path
 from constants import Constants
+from config_main import MainWindow
 import logging
 
 class TaskManager:
 
+    started = False
     interface_class = None
     display_class = None
     poll_interval_ms = 0
@@ -17,6 +19,7 @@ class TaskManager:
         pass
 
     # Main function of task manager
+    @staticmethod
     def start(self):
         # Startup configure interface
 
@@ -47,25 +50,17 @@ class TaskManager:
             config_file.close()
 
         # Startup display class
+        TaskManager.display_class = MainWindow()
 
         # Setup the display
-
-        # Run the polling thread
-
-        pass
-
-    # Causes the task manager to update
-    def _update(self):
-        pass
-
-    # Thread that will poll data APIs
-    def _poll_thread(self):
-        # Iterate through all widgets and update them
+        TaskManager.display_class.config()
+        TaskManager.display_class.register_command_func(TaskManager._command_function())
 
         pass
 
     # Adds a new configuration
-    def add_widget_config(self, config_command):
+    @staticmethod
+    def add_widget_config(config_command):
         # Pause the polling thread
 
         # Update the configuration
@@ -77,7 +72,8 @@ class TaskManager:
         pass
 
     # Removes a configuration
-    def remove_widget_config(self, config_command):
+    @staticmethod
+    def remove_widget_config(config_command):
         # Pause the polling thread
 
         # Remove the config
@@ -87,9 +83,14 @@ class TaskManager:
 
     # Gets the whole configuration of the application
     # Helps preview the current state of the display to the configuration
-    def get_current_configuration(self):
+    @staticmethod
+    def get_current_configuration():
         # Read and return the current configuration
 
         # Must remove all authentication data
 
+        pass
+
+    @staticmethod
+    def _command_function(command):
         pass
