@@ -26,17 +26,6 @@ class MainWindow(QMainWindow):
         # call config function
         self.config()
 
-    # receive from josh
-    # pass in function pointer of self.command_handler
-    def register_command(self):
-
-        # josh is sending me command_handler function
-        print(1)
-        # takes commandmessage as an argument
-        # call commandhandler, pass in commandmessage object
-
-        # whenever i want to issue a command, call the function josh passed me
-
     # modify the objects initialized in init
     def config(self):
 
@@ -54,21 +43,26 @@ class MainWindow(QMainWindow):
         # TODO config checklist1
 
 
+
         # test config_classes
 
-        # replace 'nike' with 'input'
-        test_name = 1
+        # example dictionaries
+        example_dict = {
+            "api_name": "Nike",
+            "command": "add",
+            "graph_type": "progress_bar",
+            "data_type": "calories"
+        }
 
-        print(CommandMessage.ApiEnum(test_name).name)
+        example_u = {
+            "api_name": "google_weather",
+            "command": "add",
+            "graph_type": "display_value",
+            "data_type": "temperature"
+        }
 
-        # pass api_name as only parameter for CommandMessage
-        test = CommandMessage("nike")
-
-        # print object's commands for CommandEnum
-        print(test.ApiEnum.samsung.name)
-
-        # pass testCommandWidget object to Josh's TaskManager.py function()
-        # function pointer(?) will be passed to config_main.py
+        # **list => not edited everywhere
+        test = CommandMessage(**example_dict)
 
     def clicked(self):
         self.b1.setText("dictionary sent")
@@ -80,8 +74,6 @@ def window():
 
     # josh sends me a function to call if i want to run a command
     # josh will call win.register_command_function(function*(ofTypeCommandWidget))
-
-    # josh needs to ask for:
 
     win.show()
     sys.exit(app.exec())
