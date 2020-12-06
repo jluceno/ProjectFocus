@@ -26,6 +26,9 @@ class MainWindow(QMainWindow):
         # call config function
         self.config()
 
+        # Call to send a command
+        self.command_function = None
+
     # modify the objects initialized in init
     def config(self):
 
@@ -35,10 +38,10 @@ class MainWindow(QMainWindow):
         self.b1.setGeometry(300, 0, 150, 30)
 
         # config line 1 and dropdown 1
-        self.label1.setText("first param")
+        self.label1.setText("select api")
         self.label1.move(55, 50)
         self.dd1.setGeometry(200, 50, 250, 30)
-        self.dd1.addItems(["item1", "item2", "item3"])
+        self.dd1.addItems(["nike", "google_weather"])
 
         # TODO config checklist1
 
@@ -67,6 +70,9 @@ class MainWindow(QMainWindow):
     def clicked(self):
         self.b1.setText("dictionary sent")
 
+    def register_command_func(self, command_function):
+        self.command_function = command_function
+        return
 
 def window():
     app = QApplication(sys.argv)
