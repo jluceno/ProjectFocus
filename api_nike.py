@@ -1,54 +1,45 @@
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+import os
+import json
+from constants import Constants
 
-import random as rand
+test = None
+input_miles = 0
+input_cals = 0
 
-# Variables written in snake case, classes and objects in camel case
-
-# replace with API pull, JSON format, retrieval of info.
-
-# input_miles = rand.randint(0, 10)
-# input_cals = rand.randint(100, 1000)
-
-input_miles = 10
-input_cals = 500
+# Navigates through JSON files that have been pulled and returns miles and cals from most recent run. Rounds float to 2
+for x, y, files in os.walk(os.path.abspath(os.curdir + Constants.PATH_TO_NIKE_ACTIVITIES)):
+    test = open(os.curdir + Constants.PATH_TO_NIKE_ACTIVITIES + '\\' + files[0], "r")
+    test2 = json.load(test)
+    for i in test2['summaries']:
+        if i['metric'] == 'distance':
+            input_miles = i['value']
+            input_miles = round(input_miles, 2)
+        if i['metric'] == 'calories':
+            input_cals = i['value']
+            input_cals = round(input_cals, 2)
 
 
 class Nike:
-
-    current_miles = input_miles
-    current_cals = input_cals
-    total_miles = 0
-    total_cals = 0
 
     def __init__(self, miles, cals):
         self.miles = miles
         self.cals = cals
 
-# pulls JSON, retrieves miles and cals, refreshes last run info
-    def pull(self):
-        print()
-
-# Refreshes totals with new run info
-    def refreshTotals(self):
-        print('test')
-        self.total_miles = self.current_miles + self.total_miles
-        self.total_cals = self.current_cals + self.total_miles
-        print(self.total_miles)
-
-    def printMiles(self):
-
+# Call these 4 functions for latest or total miles or calories. Totals functions are incomplete
+    def LatestMiles(self):
         print(self.miles)
+        return self.miles
 
-    def printCals(self):
+    def LatestCals(self):
         print(self.cals)
+        return self.cals
+
+# Still working on these
+    def TotalMiles(self):
+        return self.miles*2
+
+    def TotalCals(self):
+        return self.cals*2
 
 
-NikeLast = Nike(Nike.current_miles, Nike.current_cals)
-
-NikeTotal = Nike(Nike.total_miles, Nike.total_cals)
-
-NikeLast.printMiles()
-NikeTotal.printMiles()
-NikeTotal.refreshTotals()
-NikeTotal.refreshTotals()
+nike = Nike(input_miles, input_cals)
