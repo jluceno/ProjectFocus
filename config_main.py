@@ -2,7 +2,7 @@
 
 import sys
 from PyQt5.QtWidgets import QComboBox, QWidget, QStackedWidget, QHBoxLayout, QFormLayout, QLineEdit, \
-    QRadioButton, QLabel, QApplication, QVBoxLayout
+    QRadioButton, QLabel, QApplication, QVBoxLayout, QPushButton
 
 from config_classes import CommandMessage
 
@@ -18,6 +18,7 @@ class MainWindow(QWidget):
 
         self.dd1.insertItem(0, 'Nike')
         self.dd1.insertItem(1, 'Google Weather')
+        # "timeular tracker"
 
         self.stack1 = QWidget()
         self.stack2 = QWidget()
@@ -43,7 +44,9 @@ class MainWindow(QWidget):
             "api_name": "Nike",
             "command": "add",
             "graph_type": "progress_bar",
-            "data_type": "calories"
+            "data_type": "calories",
+            "username": "uhhhh",
+            "password": "password"
         }
 
         example_u = {
@@ -70,20 +73,43 @@ class MainWindow(QWidget):
 
         layout.addRow("Graph Type", QLineEdit())
         layout.addRow("Data Type", QLineEdit())
+
+        butt = QPushButton("Press to send", self)
+        # update dictionary first
+        layout.addRow("Send API data", butt)
+        butt.clicked.connect(self.button_clicked)
+
         self.stack1.setLayout(layout)
 
     def stack2ui(self):
         layout = QFormLayout()
-        layout.addRow("API Name", QLineEdit())
+
+        # refer to QLineEdit1 - setting variables for widgets
+        qle1 = QLineEdit()
+        layout.addRow("API Name", qle1)
 
         command = QHBoxLayout()
-        command.addWidget(QRadioButton("Add"))
-        command.addWidget(QRadioButton("Remove"))
+        qrb_a = QRadioButton("Add")
+        command.addWidget(qrb_a)
+        qrb_r = QRadioButton("Remove")
+        command.addWidget(qrb_r)
         layout.addRow(QLabel("Add/Remove"), command)
 
         layout.addRow("Graph Type", QLineEdit())
         layout.addRow("Data Type", QLineEdit())
+
+        butt = QPushButton("Press to send", self)
+        layout.addRow("Send API data", butt)
+        butt.clicked.connect(self.button_clicked)
+
         self.stack2.setLayout(layout)
+
+    def button_clicked(self):
+        sender = self.sender()
+        completed_message = CommandMessage(None, None, None, None, None, None)
+        if self.command_function is not None:
+            self.command_function(completed_message)
+        print("button pressed")
 
     def display(self, i):
         self.Stack.setCurrentIndex(i)
