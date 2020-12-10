@@ -54,7 +54,6 @@ class Nike:
                 Nike.total_input_cals = round(Nike.total_input_cals, 2)
 
 
-
 # Call these 4 functions for latest or total miles or calories. Totals functions are incomplete
     @staticmethod
     def LatestMiles():
@@ -81,7 +80,3 @@ class Nike:
         return Nike.total_input_cals
 
 
-Nike.LatestMiles()
-Nike.LatestCals()
-Nike.TotalMiles()
-Nike.TotalCals()
