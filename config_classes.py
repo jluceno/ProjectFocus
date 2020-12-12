@@ -15,11 +15,9 @@ import enum
 # pycharm asks for CamelClass
 class CommandMessage:
 
-# ADD USERNAME, PASSWORD
-
-    def __init__(self, api_name,
-                 command, graph_type,
-                 data_type, username, password):
+    def __init__(self, api_name=None,
+                 command=None, graph_type=None,
+                 data_type=None, username=None, password=None):
 
         self.api_name = api_name
         self.command = command
@@ -29,35 +27,50 @@ class CommandMessage:
         self.password = password
 
         print("Command object initialized")
-        print(api_name)
 
 
 class CommandMessageNike(CommandMessage):
 
-    def __init__(self, goal_miles, goal_calories):
+    def __init__(self, api_name=None, command=None, graph_type=None, data_type=None,
+                 username=None, password=None, goal_miles=None, goal_calories=None):
+
+        super().__init__(api_name, command, graph_type,
+                         data_type, username, password)
+
         self.goal_miles = goal_miles
         self.goal_calories = goal_calories
+
+    def __repr__(self):
+        return "api: %ds, command: %ds, graph type: %ds" % (self.api_name, self.command, self.graph_type)
+
+    def __str__(self):
+        return "api: %ds, command: %ds, graph type: %ds" % (self.api_name, self.command, self.graph_type)
 
 
 class CommandMessageGW(CommandMessage):
 
-    def __init__(self, coordinates):
-        self.coordinates = coordinates
+    def __init__(self, api_name=None, command=None, graph_type=None,
+                 data_type=None, username=None, password=None,
+                 coordinate_lat=None, coordinate_long=None):
 
+        super().__init__(api_name, command, graph_type,
+                         data_type, username, password)
 
-# keep
+        self.coordinate_lat = coordinate_lat
+        self.coordinate_long = coordinate_long
+
+    def __repr__(self):
+        return "api: %ds, command: %ds, graph type: %ds" % (self.api_name, self.command, self.graph_type)
+
+    def __str__(self):
+        return "api: %ds, command: %ds, graph type: %ds" % (self.api_name, self.command, self.graph_type)
 
 
 class CommandType(enum.Enum):
     add = 1
     remove = -1
-    # tentative optional parameters class
-    # class Params:
 
-
-
-
-# Taskmanager =====================================
+# TaskManager =====================================
 #
 # def getCommand(cmd):
 #     incoming_command = Command(cmd)
@@ -78,4 +91,4 @@ class CommandType(enum.Enum):
 #     # Figure out which API to call
 #     if cmd["api"] is "Nike":
 #         pass
-#         # Do nike stuff
+# Do nike stuff
