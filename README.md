@@ -3,6 +3,7 @@
 ## Build instructions
 
 1. Install python 3.9
+2. Install dependencies with `python -m pip install -r requirements.txt` 
 
 ## How to run
 
