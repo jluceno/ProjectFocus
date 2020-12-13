@@ -83,6 +83,3 @@ def window():
 
     win.show()
     sys.exit(app.exec())
-
-
-window()
