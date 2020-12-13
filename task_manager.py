@@ -1,26 +1,38 @@
+import sys
+
+from PyQt5.QtWidgets import QApplication
+
 from config_model import TaskManagerConfigModel
 from os import path
 from constants import Constants
 from config_main import MainWindow
+from api_nike import Nike
+from datetime import datetime
 import logging
+import time
+import os
+import threading
 
-class TaskManager:
+
+class TaskManager(threading.Thread):
 
     started = False
-    interface_class = None
+    config_class = None
     display_class = None
-    poll_interval_ms = 0
+    window_thread = None
+    poll_interval_seconds = 5
     config = None
+    nike = None
 
     # Lock to modify the configuration
     config_lock = None
 
     def __init__(self):
-        pass
+        super().__init__()
 
     # Main function of task manager
     @staticmethod
-    def start(self):
+    def init():
         # Startup configure interface
 
         # Register any functions for the configuration interface
@@ -42,21 +54,45 @@ class TaskManager:
                 regenerate_file = True
 
             config_file.close()
+        else:
+            regenerate_file = True
 
         if regenerate_file:
+            os.makedirs('config')
             config_file = open(Constants.CONFIG_FILE_PATH, "w")
             config_file.write(TaskManagerConfigModel.generate_default_json())
             config.init_default_values()
             config_file.close()
 
         # Startup display class
-        TaskManager.display_class = MainWindow()
 
         # Setup the display
-        TaskManager.display_class.config()
-        TaskManager.display_class.register_command_func(TaskManager._command_function())
 
-        pass
+        # Setup the Nike API
+
+        # TODO call the API function to authenticate
+
+
+    @staticmethod
+    def _polling_function():
+        # Get the current time
+        now = datetime.now()
+        dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+
+        logging.debug("Calling the polling function! " + dt_string)
+        logging.debug("NIKE_API:")
+        logging.debug("Latest calories:" + str(Nike.LatestCals()))
+        logging.debug("Latest miles:" + str(Nike.LatestMiles()))
+        logging.debug("Total calories:" + str(Nike.TotalCals()))
+        logging.debug("Total miles:" + str(Nike.TotalMiles()))
+        time.sleep(TaskManager.poll_interval_seconds)
+
+    def run(self):
+        TaskManager.init()
+
+        # Polling function
+        while True:
+            TaskManager._polling_function()
 
     # Adds a new configuration
     @staticmethod
@@ -93,4 +129,4 @@ class TaskManager:
 
     @staticmethod
     def _command_function(command):
-        pass
+        logging.debug("Command function hit!")
