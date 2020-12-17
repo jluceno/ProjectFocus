@@ -184,7 +184,3 @@ def window():
     # josh will call win.register_command_function(function*(ofTypeCommandWidget))
 
     sys.exit(app.exec_())
-
-
-if __name__ == '__main__':
-    window()
