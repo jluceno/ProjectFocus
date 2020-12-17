@@ -140,6 +140,8 @@ class MainWindow(QWidget):
             test_obj.goal_miles = self.qle_n6.text()
             test_obj.goal_calories = self.qle_n7.text()
 
+            self.com_func(test_obj)
+
             print(test_obj)
 
         if self.dd1.currentText() == 'Google Weather':
@@ -159,12 +161,13 @@ class MainWindow(QWidget):
             test_obj.coordinate_lat = self.qle_gw6.text()
             test_obj.coordinate_long = self.qle_gw7.text()
 
+            self.com_func(test_obj)
+
             print(test_obj)
 
-        # completed_message = CommandMessage(None, None, None, None, None, None)
-        # if self.command_function is not None:
-        #     self.command_function(completed_message)
-
+    def com_func(self, t_obj):
+        if self.command_function is not None:
+            self.command_function(t_obj)
         print("button pressed")
 
     def display(self, i):

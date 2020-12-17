@@ -41,10 +41,10 @@ class CommandMessageNike(CommandMessage):
         self.goal_calories = goal_calories
 
     def __repr__(self):
-        return "api: %ds, command: %ds, graph type: %ds" % (self.api_name, self.command, self.graph_type)
+        return "api: %s, command: %s, graph type: %s" % (self.api_name, self.command, self.graph_type)
 
     def __str__(self):
-        return "api: %ds, command: %ds, graph type: %ds" % (self.api_name, self.command, self.graph_type)
+        return "api: %s, command: %s, graph type: %s" % (self.api_name, self.command, self.graph_type)
 
 
 class CommandMessageGW(CommandMessage):
