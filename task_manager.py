@@ -36,6 +36,7 @@ class TaskManager(threading.Thread):
         # Startup configure interface
 
         # Register any functions for the configuration interface
+        TaskManager.config_class.register_command_func(TaskManager._command_function)
 
         # Load previous configuration or start a new one
         config = TaskManagerConfigModel()
