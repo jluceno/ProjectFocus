@@ -1,6 +1,5 @@
 import enum
 
-
 # declare enums to select from (goal or uncontrollable)
 # api_enum = nike, something, etc.
 # commands = add, remove
@@ -13,11 +12,13 @@ import enum
 # Nike: CommandMessageNike class inherit for specifics - calories, miles
 
 # pycharm asks for CamelClass
-class CommandMessage:
+
+class CommandMessageNike:
 
     def __init__(self, api_name=None,
                  command=None, graph_type=None,
-                 data_type=None, username=None, password=None):
+                 data_type=None, username=None, password=None,
+                 goal_miles=None, goal_calories=None):
 
         self.api_name = api_name
         self.command = command
@@ -25,18 +26,6 @@ class CommandMessage:
         self.data_type = data_type
         self.username = username
         self.password = password
-
-        print("Command object initialized")
-
-
-class CommandMessageNike(CommandMessage):
-
-    def __init__(self, api_name=None, command=None, graph_type=None, data_type=None,
-                 username=None, password=None, goal_miles=None, goal_calories=None):
-
-        super().__init__(api_name, command, graph_type,
-                         data_type, username, password)
-
         self.goal_miles = goal_miles
         self.goal_calories = goal_calories
 
@@ -46,24 +35,59 @@ class CommandMessageNike(CommandMessage):
     def __str__(self):
         return "api: %s, command: %s, graph type: %s" % (self.api_name, self.command, self.graph_type)
 
+    print("Command object initialized")
 
-class CommandMessageGW(CommandMessage):
 
-    def __init__(self, api_name=None, command=None, graph_type=None,
+class CommandMessageGW:
+
+    def __init__(self, api_name=None,
+                 command=None, graph_type=None,
                  data_type=None, username=None, password=None,
                  coordinate_lat=None, coordinate_long=None):
 
-        super().__init__(api_name, command, graph_type,
-                         data_type, username, password)
-
+        self.api_name = api_name
+        self.command = command
+        self.graph_type = graph_type
+        self.data_type = data_type
+        self.username = username
+        self.password = password
         self.coordinate_lat = coordinate_lat
         self.coordinate_long = coordinate_long
 
     def __repr__(self):
-        return "api: %ds, command: %ds, graph type: %ds" % (self.api_name, self.command, self.graph_type)
+        return "api: %s, command: %s, graph type: %s" % (self.api_name, self.command, self.graph_type)
 
     def __str__(self):
-        return "api: %ds, command: %ds, graph type: %ds" % (self.api_name, self.command, self.graph_type)
+        return "api: %s, command: %s, graph type: %s" % (self.api_name, self.command, self.graph_type)
+
+    print("Command object initialized")
+
+
+class CommandMessageTimeular:
+
+    def __init__(self, api_name=None, command=None,
+                 username=None, password=None,
+                 time_range=None, goal_label=None,
+                 goal_progress=None, goal_wanted=None):
+
+        self.api_name = api_name
+        self.command = command
+        self.username = username
+        self.password = password
+        self.time_range = time_range
+        self.goal_label = goal_label
+        self.goal_progress = goal_progress
+        self.goal_wanted = goal_wanted
+
+    def __repr__(self):
+        return "api: %s, command: %s, goal: %s, timeframe: %s" % \
+               (self.api_name, self.command, self.goal_label, self.time_range)
+
+    def __str__(self):
+        return "api: %s, command: %s, goal: %s, timeframe: %s" % \
+               (self.api_name, self.command, self.goal_label, self.time_range)
+
+    print("Command object initialized")
 
 
 class CommandType(enum.Enum):
