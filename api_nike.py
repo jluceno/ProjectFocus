@@ -36,6 +36,8 @@ class Nike:
                     Nike.input_cals = round(Nike.input_cals, 2)
     @staticmethod
     def GetTotals():
+        Nike.total_input_cals = 0
+        Nike.total_input_miles = 0
         for x, y, files in os.walk(os.path.abspath(os.curdir + Constants.PATH_TO_NIKE_ACTIVITIES)):
             sorted_files = sorted(files)
             for curr_file in sorted_files:
@@ -45,11 +47,9 @@ class Nike:
                     if i['metric'] == 'distance':
                         temp_total = i['value']
                         Nike.total_input_miles += temp_total
-
                     if i['metric'] == 'calories':
                         temp_total = i['value']
                         Nike.total_input_cals += temp_total
-
                 Nike.total_input_miles = round(Nike.total_input_miles, 2)
                 Nike.total_input_cals = round(Nike.total_input_cals, 2)
 
@@ -78,5 +78,3 @@ class Nike:
         Nike.GetTotals()
         print(Nike.total_input_cals)
         return Nike.total_input_cals
-
-
