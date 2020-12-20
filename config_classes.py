@@ -35,7 +35,9 @@ class CommandMessageNike(CommandMessage):
     def __init__(self, api_name=None,
                  command=None, graph_type=None,
                  data_type=None, username=None, password=None,
-                 goal_miles=None, goal_calories=None):
+                 goal_miles_total=None, goal_calories_total=None,
+                 goal_miles_week=None, goal_miles_month=None,
+                 goal_calories_week=None, goal_calories_month=None):
 
         super().__init__(api_name, command, username, password)
 
@@ -45,8 +47,12 @@ class CommandMessageNike(CommandMessage):
         self.data_type = data_type
         self.username = username
         self.password = password
-        self.goal_miles = goal_miles
-        self.goal_calories = goal_calories
+        self.goal_miles_total = goal_miles_total
+        self.goal_calories_total = goal_calories_total
+        self.goal_miles_week = goal_miles_week
+        self.goal_calories_week = goal_calories_week
+        self.goal_miles_month = goal_miles_month
+        self.goal_calories_month = goal_calories_month
 
 
 class CommandMessageGW:

@@ -28,6 +28,10 @@ class MainWindow(QWidget):
         self.qle_n5 = QLineEdit()
         self.qle_n6 = QLineEdit()
         self.qle_n7 = QLineEdit()
+        self.qle_n8 = QLineEdit()
+        self.qle_n9 = QLineEdit()
+        self.qle_n10 = QLineEdit()
+        self.qle_n11 = QLineEdit()
 
         # init for stack_gw2
         self.command_group2 = QButtonGroup(self)
@@ -142,6 +146,10 @@ class MainWindow(QWidget):
         layout.addRow("Data Type", self.qle_n3)
         layout.addRow("Total Miles Goal", self.qle_n6)
         layout.addRow("Total Calories Goal", self.qle_n7)
+        layout.addRow("Weekly Mile Goal", self.qle_n8)
+        layout.addRow("Weekly Calorie Goal", self.qle_n9)
+        layout.addRow("Monthly Mile Goal", self.qle_n10)
+        layout.addRow("Monthly Calorie Goal", self.qle_n11)
 
         self.stack1.setLayout(layout)
 
@@ -190,8 +198,12 @@ class MainWindow(QWidget):
             stored_object.data_type = self.qle_n3.text()
             stored_object.username = self.qle_n4.text()
             stored_object.password = self.qle_n5.text()
-            stored_object.goal_miles = self.qle_n6.text()
-            stored_object.goal_calories = self.qle_n7.text()
+            stored_object.goal_miles_total = self.qle_n6.text()
+            stored_object.goal_calories_total = self.qle_n7.text()
+            stored_object.goal_miles_week = self.qle_n8.text()
+            stored_object.goal_calories_week = self.qle_n9.text()
+            stored_object.goal_miles_month = self.qle_n10.text()
+            stored_object.goal_calories_month = self.qle_n11.text()
 
             self.com_func(stored_object)
 
@@ -258,14 +270,3 @@ class MainWindow(QWidget):
     def register_command_func(self, command_function):
         self.command_function = command_function
         return
-
-
-def window():
-    app = QApplication(sys.argv)
-    win = MainWindow()
-    win.show()
-
-    # josh sends me a function to call if i want to run a command
-    # josh will call win.register_command_function(function*(ofTypeCommandWidget))
-
-    sys.exit(app.exec_())
