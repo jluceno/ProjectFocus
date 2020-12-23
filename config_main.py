@@ -1,9 +1,7 @@
 # settings - project - python interpreter - pyqt5
 
-import sys
-
 from PyQt5.QtWidgets import QComboBox, QWidget, QStackedWidget, QFormLayout, QLineEdit, \
-    QRadioButton, QLabel, QApplication, QPushButton, QVBoxLayout, QHBoxLayout, QButtonGroup
+    QRadioButton, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QButtonGroup
 
 from config_classes import CommandMessageNike, CommandMessageGW, CommandMessageTimeular
 
