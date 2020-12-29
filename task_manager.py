@@ -8,21 +8,20 @@ from constants import Constants
 from config_main import MainWindow
 from api_nike import Nike
 from datetime import datetime
+from config_classes import CommandMessage, CommandMessageNike
 import logging
 import time
 import os
 import threading
+import json
 
 
 class TaskManager(threading.Thread):
 
     started = False
     config_class = None
-    display_class = None
-    window_thread = None
     poll_interval_seconds = 5
-    config = None
-    nike = None
+    polling_threads = {}
 
     # Lock to modify the configuration
     config_lock = None
@@ -33,25 +32,25 @@ class TaskManager(threading.Thread):
     # Main function of task manager
     @staticmethod
     def init():
-        # Startup configure interface
-
         # Register any functions for the configuration interface
         TaskManager.config_class.register_command_func(TaskManager._command_function)
 
         # Load previous configuration or start a new one
-        config = TaskManagerConfigModel()
-
         regenerate_file = False
         config_file = None
 
         if path.exists(Constants.CONFIG_FILE_PATH):
             config_file = open(Constants.CONFIG_FILE_PATH, "r")
-            config_success = config.import_json(config_file.read())
+
+            try:
+                config_success = TaskManagerConfigModel.import_json(config_file.read())
+            except json.JSONDecodeError:
+                config_success = False
 
             if config_success:
                 logging.debug("Successfully loaded config file")
             else:
-                logging.debug("Failed to load config file. Regenerating")
+                logging.error("Failed to load config file. Regenerating")
                 regenerate_file = True
 
             config_file.close()
@@ -59,19 +58,25 @@ class TaskManager(threading.Thread):
             regenerate_file = True
 
         if regenerate_file:
-            os.makedirs('config')
+            if not path.exists('config'):
+                os.makedirs('config')
             config_file = open(Constants.CONFIG_FILE_PATH, "w")
             config_file.write(TaskManagerConfigModel.generate_default_json())
-            config.init_default_values()
+            TaskManagerConfigModel.init_default_values()
             config_file.close()
 
         # Startup display class
 
         # Setup the display
 
-        # Setup the Nike API
+        # Setup Nike API
+        nike_thread = threading.Thread(target=Nike.run_poll)
+        TaskManager.polling_threads["Nike"] = nike_thread
 
-        # TODO call the API function to authenticate
+        if "Nike" in TaskManagerConfigModel.api_configs:
+            nike_config = TaskManagerConfigModel.api_configs["Nike"]
+            Nike.auth_key = nike_config["password"]
+            TaskManager.polling_threads["Nike"].start()
 
 
     @staticmethod
@@ -80,12 +85,13 @@ class TaskManager(threading.Thread):
         now = datetime.now()
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
 
-        logging.debug("Calling the polling function! " + dt_string)
-        logging.debug("NIKE_API:")
-        logging.debug("Latest calories:" + str(Nike.LatestCals()))
-        logging.debug("Latest miles:" + str(Nike.LatestMiles()))
-        logging.debug("Total calories:" + str(Nike.TotalCals()))
-        logging.debug("Total miles:" + str(Nike.TotalMiles()))
+        # TODO fix the logging level
+        logging.info("Calling the polling function! " + dt_string)
+        logging.info("NIKE_API:")
+        logging.info("Latest calories:" + str(Nike.LatestCals()))
+        logging.info("Latest miles:" + str(Nike.LatestMiles()))
+        logging.info("Total calories:" + str(Nike.TotalCals()))
+        logging.info("Total miles:" + str(Nike.TotalMiles()))
         time.sleep(TaskManager.poll_interval_seconds)
 
     def run(self):
@@ -95,39 +101,41 @@ class TaskManager(threading.Thread):
         while True:
             TaskManager._polling_function()
 
-    # Adds a new configuration
     @staticmethod
-    def add_widget_config(config_command):
-        # Pause the polling thread
+    # Adds a new api configuration
+    def add_new_api(command):
+        api_config_name = None
+        api_config_data = None
+        if command.api_name == "Nike":
+            api_config_name = command.api_name
+            api_config_data = {
+                "username" : command.username,
+                "password" : command.password,
+                "goal_miles_total": command.goal_miles_total,
+                "goal_calories_total": command.goal_calories_total,
+                "goal_miles_week": command.goal_miles_week,
+                "goal_calories_week": command.goal_calories_week,
+                "goal_miles_month": command.goal_miles_month,
+                "goal_calories_month": command.goal_calories_month}
 
-        # Update the configuration
+        if api_config_name is not None and api_config_data is not None:
+            TaskManagerConfigModel.api_configs[api_config_name] = api_config_data
 
-        # Get data from the API for the new object
+            # TODO save the information in a file
+            config_file = open(Constants.CONFIG_FILE_PATH, "w")
+            config_file.write(TaskManagerConfigModel.to_json())
+            config_file.close()
 
-        # Resume the polling thread
+            # Run the Nike thread
+            nike_config = TaskManagerConfigModel.api_configs["Nike"]
+            Nike.auth_key = nike_config["password"]
+            TaskManager.polling_threads["Nike"].start()
+            return True
+        else:
+            return None
 
-        pass
-
-    # Removes a configuration
     @staticmethod
-    def remove_widget_config(config_command):
-        # Pause the polling thread
-
-        # Remove the config
-
-        # Resume the polling thread
-        pass
-
-    # Gets the whole configuration of the application
-    # Helps preview the current state of the display to the configuration
-    @staticmethod
-    def get_current_configuration():
-        # Read and return the current configuration
-
-        # Must remove all authentication data
-
-        pass
-
-    @staticmethod
-    def _command_function(command):
-        logging.debug("Command function hit!")
+    def _command_function(command: CommandMessage):
+        result = TaskManager.add_new_api(command)
+        if result is None:
+            logging.error("Command from config UI not recognized")

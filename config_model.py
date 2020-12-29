@@ -1,26 +1,44 @@
 import json
 from widget_model import WidgetModel
+import logging
 
 
 class TaskManagerConfigModel:
 
-    saved_widgets_array = None
+    api_configs = {}
 
     # Convert the model data into a json file
-    def to_json(self):
-        json_saved_widgets_array = []
-        for widget in json_saved_widgets_array:
-            json_saved_widgets_array.append(widget.to_json_map())
-        return json.dumps(json_saved_widgets_array)
+    @staticmethod
+    def to_json():
+        master_dict = {"api_configs": {}}
+        for api_config_key in TaskManagerConfigModel.api_configs:
+            master_dict["api_configs"][api_config_key] = TaskManagerConfigModel.api_configs[api_config_key]
+
+        return json.dumps(master_dict)
 
     # Pass in a json string to save the config model
-    def import_json(self, json_input):
+    @staticmethod
+    def import_json(json_input):
+        dict_obj = json.loads(json_input)
+        try:
+            for api_config in dict_obj["api_configs"].items():
+                TaskManagerConfigModel.api_configs[api_config[0]] = api_config[1]
+        except KeyError:
+            logging.error("Failed to load configuration file")
+            return None
+        except AttributeError:
+            logging.error("Failed to load configuration file")
+            return None
         return True
 
     @staticmethod
     def generate_default_json():
-        return "test"
+        return '''{
+    "api_configs": {}
+}'''
 
-    def init_default_values(self):
+
+    @staticmethod
+    def init_default_values():
         saved_widgets_array = None
 

@@ -7,7 +7,7 @@ from task_manager import TaskManager
 
 
 def main():
-    logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+    logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.CRITICAL)
     logging.debug("Starting project focus")
 
     # Setup the UI
