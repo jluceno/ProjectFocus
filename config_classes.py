@@ -19,14 +19,6 @@ class CommandMessage:
         self.username = username
         self.password = password
 
-    def __repr__(self):
-        return "api: %s, command: %s, goal: %s, timeframe: %s" % \
-               (self.api_name, self.command, self.goal_label, self.time_range)
-
-    def __str__(self):
-        return "api: %s, command: %s, goal: %s, timeframe: %s" % \
-               (self.api_name, self.command, self.goal_label, self.time_range)
-
     print("Command object initialized")
 
 

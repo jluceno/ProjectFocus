@@ -4,3 +4,4 @@ PyQt5-stubs==5.14.2.2
 pip
 setuptools
 flask
+httpx
