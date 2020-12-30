@@ -9,6 +9,8 @@ from config_main import MainWindow
 from api_nike import Nike
 from datetime import datetime
 from config_classes import CommandMessage, CommandMessageNike
+from flask_server import flask_server
+
 import logging
 import time
 import os
@@ -67,7 +69,12 @@ class TaskManager(threading.Thread):
 
         # Startup display class
 
+
         # Setup the display
+
+
+        # Setup the flask server for the display
+        flask_server.start_server()
 
         # Setup Nike API
         nike_thread = threading.Thread(target=Nike.run_poll)
