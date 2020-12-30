@@ -12,6 +12,7 @@
 
 ## How to run
 
+1. First run the server with `python main.py`
 1. Run the command `npm start`
 
 ## Coding practices

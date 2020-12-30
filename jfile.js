@@ -1,23 +1,17 @@
 const {app, BrowserWindow} = require('electron')
+const path = require('path') 
 
 function createWindow() {
-    window = new BrowserWindow({width: 800, height: 600})
-    window.loadFile('hfile.html')
+    window = new BrowserWindow({ width: 800, height: 600 })
 
-    var python = require('child_process').spawn('python', ['./main.py']);
-    python.stdout.on('data', function(data){
-        console.log("data: ", data.toString('utf8'));
-    });
+    // TODO have the option to start separately
+    // var python = require('child_process').spawn('python', ['./main.py']);
+    // python.stdout.on('data', function(data){
+    //     console.log("data: ", data.toString('utf8'));
+    // });
 
-    var { PythonShell } = require('python-shell');
-    PythonShell.run('main.py', null, function (err, results) {
-        if (err) throw err;
-        console.log('main.py finished.');
-        console.log('results: ', results);
-    });
-
+    window.loadURL('http://127.0.0.1:5000/');
 }
-
 
 app.on('ready', createWindow)
 

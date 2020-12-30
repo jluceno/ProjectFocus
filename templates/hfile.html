@@ -1,6 +1,7 @@
 <!DOCTYPE html>
     <html>
         <head>
+            <script src="static/fetch_data_demo.js"></script>
             <meta charset="UTF-8">
             <title>Split 3 ways</title>
 <style>
@@ -106,19 +107,30 @@ body, html {
                 <h1>Nike Run Club</h1>
 
                     <h2>This Week</h2>
-                    <p>miles <br>
-                        cals
+                    <p>
+                        <span id="cur_weekly_miles">NULL</span> /
+                        <span id="cur_weekly_miles_goal">NULL</span> miles <br>
+                        <span id="cur_weekly_cals">NULL</span> /
+                        <span id="cur_weekly_cals_goal">NULL</span> cals    
                     </p>
 
                     <h2>This Month</h2>
-                    <p>miles <br>
-                        cals
+                    <p>
+                        <span id="cur_monthly_miles">NULL</span> /
+                        <span id="cur_monthly_miles_goal">NULL</span> miles <br>
+                        <span id="cur_monthly_cals">NULL</span> /
+                        <span id="cur_monthly_cals_goal">NULL</span> cals <br>
                     </p>
 
                     <h2>Total</h2>
-                    <p>miles ran <br>
-                    calories burned
+                    <p>
+                        <span id="cur_total_miles">NULL</span> /
+                        <span id="cur_total_miles_goal">NULL</span> miles <br>
+                        <span id="cur_total_cals">NULL</span> /
+                        <span id="cur_total_cals_goal">NULL</span> cals <br>
                     </p>
+
+                    <button onclick="get_data()">Test Backend!</button>
                 </div>
         </div>
         </body>
