@@ -16,6 +16,7 @@ import time
 import os
 import threading
 import json
+from util import get_logging
 
 
 class TaskManager(threading.Thread):
@@ -24,6 +25,7 @@ class TaskManager(threading.Thread):
     config_class = None
     poll_interval_seconds = 5
     polling_threads = {}
+    log_tm = None
 
     # Lock to modify the configuration
     config_lock = None
@@ -34,7 +36,11 @@ class TaskManager(threading.Thread):
     # Main function of task manager
     @staticmethod
     def init():
+        TaskManager.log_tm = get_logging("main.tm", logging.DEBUG)
         # Register any functions for the configuration interface
+        if TaskManager.config_class is None:
+            TaskManager.log_tm.error("Config class is not set! Aborting")
+            raise Exception("Config UI not set!")
         TaskManager.config_class.register_command_func(TaskManager._command_function)
 
         # Load previous configuration or start a new one
@@ -50,9 +56,9 @@ class TaskManager(threading.Thread):
                 config_success = False
 
             if config_success:
-                logging.debug("Successfully loaded config file")
+                TaskManager.log_tm.debug("Successfully loaded config file")
             else:
-                logging.error("Failed to load config file. Regenerating")
+                TaskManager.log_tm.error("Failed to load config file. Regenerating")
                 regenerate_file = True
 
             config_file.close()
@@ -60,6 +66,7 @@ class TaskManager(threading.Thread):
             regenerate_file = True
 
         if regenerate_file:
+            TaskManager.log_tm.debug("Regenerating config file")
             if not path.exists('config'):
                 os.makedirs('config')
             config_file = open(Constants.CONFIG_FILE_PATH, "w")
@@ -74,9 +81,12 @@ class TaskManager(threading.Thread):
 
 
         # Setup the flask server for the display
+        TaskManager.log_tm.debug("Starting flask server")
         flask_server.start_server()
 
         # Setup Nike API
+        # TODO have a cleaner way of doing this
+        TaskManager.log_tm.debug("Starting Nike thread")
         nike_thread = threading.Thread(target=Nike.run_poll)
         TaskManager.polling_threads["Nike"] = nike_thread
 
@@ -92,13 +102,12 @@ class TaskManager(threading.Thread):
         now = datetime.now()
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
 
-        # TODO fix the logging level
-        logging.info("Calling the polling function! " + dt_string)
-        logging.info("NIKE_API:")
-        logging.info("Latest calories:" + str(Nike.LatestCals()))
-        logging.info("Latest miles:" + str(Nike.LatestMiles()))
-        logging.info("Total calories:" + str(Nike.TotalCals()))
-        logging.info("Total miles:" + str(Nike.TotalMiles()))
+        TaskManager.log_tm.debug("Calling the polling function! " + dt_string)
+        TaskManager.log_tm.debug("NIKE_API:")
+        TaskManager.log_tm.debug("Latest calories:" + str(Nike.LatestCals()))
+        TaskManager.log_tm.debug("Latest miles:" + str(Nike.LatestMiles()))
+        TaskManager.log_tm.debug("Total calories:" + str(Nike.TotalCals()))
+        TaskManager.log_tm.debug("Total miles:" + str(Nike.TotalMiles()))
         time.sleep(TaskManager.poll_interval_seconds)
 
     def run(self):
@@ -145,4 +154,4 @@ class TaskManager(threading.Thread):
     def _command_function(command: CommandMessage):
         result = TaskManager.add_new_api(command)
         if result is None:
-            logging.error("Command from config UI not recognized")
+            TaskManager.log_tm.error("Command from config UI not recognized")

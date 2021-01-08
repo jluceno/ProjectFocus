@@ -4,11 +4,11 @@ import sys
 from PyQt5.QtWidgets import QApplication
 from config_main import MainWindow
 from task_manager import TaskManager
-
+from util import get_logging
 
 def main():
-    logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.CRITICAL)
-    logging.debug("Starting project focus")
+    main_log = get_logging("main", logging.DEBUG)
+    main_log.debug("Starting project focus")
 
     # Setup the UI
     app = QApplication(sys.argv)
@@ -26,4 +26,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
