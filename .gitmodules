@@ -1,0 +1,3 @@
+[submodule "submodule/MagicMirror"]
+	path = submodule/MagicMirror
+	url = https://github.com/MichMich/MagicMirror.git
