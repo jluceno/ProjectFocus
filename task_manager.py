@@ -3,7 +3,7 @@ import sys
 from PyQt5.QtWidgets import QApplication
 
 from config_model import TaskManagerConfigModel
-from os import path
+from pathlib import Path
 from constants import Constants
 from config_main import MainWindow
 from api_nike import Nike
@@ -47,8 +47,8 @@ class TaskManager(threading.Thread):
         regenerate_file = False
         config_file = None
 
-        if path.exists(Constants.CONFIG_FILE_PATH):
-            config_file = open(Constants.CONFIG_FILE_PATH, "r")
+        if Constants.CONFIG_FILE_PATH.exists():
+            config_file = Constants.CONFIG_FILE_PATH.open(mode='r')
 
             try:
                 config_success = TaskManagerConfigModel.import_json(config_file.read())
@@ -67,9 +67,10 @@ class TaskManager(threading.Thread):
 
         if regenerate_file:
             TaskManager.log_tm.debug("Regenerating config file")
-            if not path.exists('config'):
-                os.makedirs('config')
-            config_file = open(Constants.CONFIG_FILE_PATH, "w")
+            config_path = Path('.', 'config')
+            if not config_path.exists():
+                config_path.mkdir()
+            config_file = Constants.CONFIG_FILE_PATH.open('w')
             config_file.write(TaskManagerConfigModel.generate_default_json())
             TaskManagerConfigModel.init_default_values()
             config_file.close()
@@ -138,7 +139,7 @@ class TaskManager(threading.Thread):
             TaskManagerConfigModel.api_configs[api_config_name] = api_config_data
 
             # TODO save the information in a file
-            config_file = open(Constants.CONFIG_FILE_PATH, "w")
+            config_file = Constants.CONFIG_FILE_PATH.open(mode='w')
             config_file.write(TaskManagerConfigModel.to_json())
             config_file.close()
 
