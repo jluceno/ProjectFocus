@@ -5,6 +5,8 @@ from flask import Flask, render_template, jsonify
 
 
 class flask_server:
+    test_number = 0
+
     if getattr(sys, 'frozen', False):
         template_folder = os.path.join(sys._MEIPASS, 'templates')
         static_folder = os.path.join(sys._MEIPASS, 'static')
@@ -25,8 +27,10 @@ class flask_server:
     @staticmethod
     @app.route("/update")
     def update_display():
-        message = {'greeting':'Hello from Flask!'}
-        return jsonify(message), 200
+        message = {'greeting':'Hello from Flask!' + str(flask_server.test_number)}
+        htmlDoc = flask_server.app.make_response(rv=(jsonify(message), 200, {"Access-Control-Allow-Origin":"http://localhost:8080"}))
+        flask_server.test_number += 1
+        return htmlDoc
 
     @staticmethod
     def start_server():
