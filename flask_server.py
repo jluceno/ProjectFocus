@@ -1,10 +1,12 @@
 import sys
 import os
 import logging
+import threading
 from flask import Flask, render_template, jsonify
+from task_manager import TaskManager
 
 
-class flask_server:
+class FlaskServer(threading.Thread):
     test_number = 0
 
     if getattr(sys, 'frozen', False):
@@ -18,6 +20,9 @@ class flask_server:
 
     else:
         app = Flask(__name__)
+
+    def __init__(self):
+        super().__init__()
 
     @staticmethod
     @app.route("/")

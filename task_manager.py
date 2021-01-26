@@ -75,16 +75,6 @@ class TaskManager(threading.Thread):
             TaskManagerConfigModel.init_default_values()
             config_file.close()
 
-        # Startup display class
-
-
-        # Setup the display
-
-
-        # Setup the flask server for the display
-        TaskManager.log_tm.debug("Starting flask server")
-        flask_server.start_server()
-
         # Setup Nike API
         # TODO have a cleaner way of doing this
         TaskManager.log_tm.debug("Starting Nike thread")
@@ -103,12 +93,7 @@ class TaskManager(threading.Thread):
         now = datetime.now()
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
 
-        TaskManager.log_tm.debug("Calling the polling function! " + dt_string)
-        TaskManager.log_tm.debug("NIKE_API:")
-        TaskManager.log_tm.debug("Latest calories:" + str(Nike.LatestCals()))
-        TaskManager.log_tm.debug("Latest miles:" + str(Nike.LatestMiles()))
-        TaskManager.log_tm.debug("Total calories:" + str(Nike.TotalCals()))
-        TaskManager.log_tm.debug("Total miles:" + str(Nike.TotalMiles()))
+
         time.sleep(TaskManager.poll_interval_seconds)
 
     def run(self):
