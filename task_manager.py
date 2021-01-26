@@ -9,7 +9,6 @@ from config_main import MainWindow
 from api_nike import Nike
 from datetime import datetime
 from config_classes import CommandMessage, CommandMessageNike
-from flask_server import flask_server
 
 import logging
 import time
@@ -141,3 +140,13 @@ class TaskManager(threading.Thread):
         result = TaskManager.add_new_api(command)
         if result is None:
             TaskManager.log_tm.error("Command from config UI not recognized")
+
+    @staticmethod
+    def get_nike_data():
+        if "Nike" in TaskManager.polling_threads:
+            TaskManager.log_tm.debug("Fetching Nike data!")
+            nike_dict = { "latest_calories" : Nike.LatestCals(),
+                "latest_miles": Nike.LatestMiles(),
+                "total_calories": Nike.TotalCals(),
+                "total_miles" : Nike.TotalMiles()}
+            return json.dumps(nike_dict)

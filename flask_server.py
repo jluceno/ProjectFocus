@@ -32,12 +32,18 @@ class FlaskServer(threading.Thread):
     @staticmethod
     @app.route("/update")
     def update_display():
-        message = {'greeting':'Hello from Flask!' + str(flask_server.test_number)}
-        htmlDoc = flask_server.app.make_response(rv=(jsonify(message), 200, {"Access-Control-Allow-Origin":"http://localhost:8080"}))
-        flask_server.test_number += 1
+        message = {'greeting':'Hello from Flask!' + str(FlaskServer.test_number)}
+        htmlDoc = FlaskServer.app.make_response(rv=(jsonify(message), 200, {"Access-Control-Allow-Origin":"http://localhost:8080"}))
+        FlaskServer.test_number += 1
         return htmlDoc
 
     @staticmethod
-    def start_server():
-        if flask_server.app is not None:
-            flask_server.app.run(host='127.0.0.1', port=5000)
+    @app.route("/nike")
+    def update_nike():
+        resp = FlaskServer.app.make_response(rv=(TaskManager.get_nike_data(), 200, {"Access-Control-Allow-Origin":"http://localhost:8080"}))
+        return resp
+
+    @staticmethod
+    def start():
+        if FlaskServer.app is not None:
+            FlaskServer.app.run(host='127.0.0.1', port=5000)
