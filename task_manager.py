@@ -9,7 +9,6 @@ from config_main import MainWindow
 from api_nike import Nike
 from datetime import datetime
 from config_classes import CommandMessage, CommandMessageNike
-from flask_server import flask_server
 
 import logging
 import time
@@ -75,16 +74,6 @@ class TaskManager(threading.Thread):
             TaskManagerConfigModel.init_default_values()
             config_file.close()
 
-        # Startup display class
-
-
-        # Setup the display
-
-
-        # Setup the flask server for the display
-        TaskManager.log_tm.debug("Starting flask server")
-        flask_server.start_server()
-
         # Setup Nike API
         # TODO have a cleaner way of doing this
         TaskManager.log_tm.debug("Starting Nike thread")
@@ -103,12 +92,7 @@ class TaskManager(threading.Thread):
         now = datetime.now()
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
 
-        TaskManager.log_tm.debug("Calling the polling function! " + dt_string)
-        TaskManager.log_tm.debug("NIKE_API:")
-        TaskManager.log_tm.debug("Latest calories:" + str(Nike.LatestCals()))
-        TaskManager.log_tm.debug("Latest miles:" + str(Nike.LatestMiles()))
-        TaskManager.log_tm.debug("Total calories:" + str(Nike.TotalCals()))
-        TaskManager.log_tm.debug("Total miles:" + str(Nike.TotalMiles()))
+
         time.sleep(TaskManager.poll_interval_seconds)
 
     def run(self):
@@ -156,3 +140,13 @@ class TaskManager(threading.Thread):
         result = TaskManager.add_new_api(command)
         if result is None:
             TaskManager.log_tm.error("Command from config UI not recognized")
+
+    @staticmethod
+    def get_nike_data():
+        if "Nike" in TaskManager.polling_threads:
+            TaskManager.log_tm.debug("Fetching Nike data!")
+            nike_dict = { "latest_calories" : Nike.LatestCals(),
+                "latest_miles": Nike.LatestMiles(),
+                "total_calories": Nike.TotalCals(),
+                "total_miles" : Nike.TotalMiles()}
+            return json.dumps(nike_dict)
