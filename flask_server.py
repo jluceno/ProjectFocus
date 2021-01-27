@@ -33,14 +33,14 @@ class FlaskServer(threading.Thread):
     @app.route("/update")
     def update_display():
         message = {'greeting':'Hello from Flask!' + str(FlaskServer.test_number)}
-        htmlDoc = FlaskServer.app.make_response(rv=(jsonify(message), 200, {"Access-Control-Allow-Origin":"http://localhost:8080"}))
+        htmlDoc = FlaskServer.app.make_response(rv=(jsonify(message), 200, {"Access-Control-Allow-Origin":"http://127.0.0.1:8080"}))
         FlaskServer.test_number += 1
         return htmlDoc
 
     @staticmethod
     @app.route("/nike")
     def update_nike():
-        resp = FlaskServer.app.make_response(rv=(TaskManager.get_nike_data(), 200, {"Access-Control-Allow-Origin":"http://localhost:8080"}))
+        resp = FlaskServer.app.make_response(rv=(TaskManager.get_nike_data(), 200, {"Access-Control-Allow-Origin":"http://127.0.0.1:8080"}))
         return resp
 
     @staticmethod
