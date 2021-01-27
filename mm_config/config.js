@@ -43,11 +43,18 @@ var config = {
 		},
 		{
 			module: "testfocusmodule",
-			position: "top_left"
+			position: "top_right"
 		},
 		{
-			module: "helloworld",
-			position: "top_right"
+			module: "clock",
+			position: "top_bar"
+		},
+		{
+			module: "weather",
+			position: "top_bar",
+			config: {
+				type: 'current'
+			}
 		}
 	]
 };
