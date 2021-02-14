@@ -3,7 +3,7 @@ import sys
 
 from PyQt5.QtWidgets import QApplication
 from config_main import MainWindow
-from task_manager import TaskManager
+from core import Core
 from util import get_logging
 from flask_server import FlaskServer
 
@@ -19,8 +19,8 @@ def main():
 
     # Start the task manager thread
     main_log.debug("Starting core")
-    tm = TaskManager()
-    TaskManager.config_class = win
+    tm = Core()
+    Core.config_class = win
     tm.start()
 
     # Start the flask server

@@ -42,8 +42,12 @@ var config = {
 			module: "alert",
 		},
 		{
-			module: "testfocusmodule",
+			module: "nike_test_module",
 			position: "top_right"
+		},
+		{
+			module: "timeular_test_module",
+			position: "top_left"
 		},
 		{
 			module: "clock",

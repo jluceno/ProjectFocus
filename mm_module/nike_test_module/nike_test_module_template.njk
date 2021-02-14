@@ -1,0 +1,32 @@
+<div>
+    <h1>Nike Run Club</h1>
+    <table>
+        <tr>
+            <td>
+                <b>This week</b>
+            </td>
+            <td>
+                <b>This month</b> 
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h3>
+                    {{weekly_data.current_miles}}/{{weekly_data.mile_goal}} miles <br>
+                    {{weekly_data.current_calories}}/{{weekly_data.calorie_goal}} cals
+                </h3>
+            </td>
+            <td>
+                <h3>
+                    {{monthly_data.current_miles}}/{{monthly_data.mile_goal}} miles <br>
+                    {{monthly_data.current_calories}}/{{monthly_data.calorie_goal}} cals
+                </h3>
+            </td>
+        </tr>
+    </table>
+        <h3>
+            <b>Totals</b> <br>
+            {{totals.total_miles}} Miles <br>
+            {{totals.total_calories}} Calories
+        </h3>
+</div>

@@ -3,7 +3,7 @@ import os
 import logging
 import threading
 from flask import Flask, render_template, jsonify
-from task_manager import TaskManager
+from core import Core
 
 
 class FlaskServer(threading.Thread):
@@ -32,7 +32,7 @@ class FlaskServer(threading.Thread):
     @staticmethod
     @app.route("/update")
     def update_display():
-        message = {'greeting':'Hello from Flask!' + str(FlaskServer.test_number)}
+        message = {'greeting':'Hello from Flask!' + str(Core.test_number)}
         htmlDoc = FlaskServer.app.make_response(rv=(jsonify(message), 200, {"Access-Control-Allow-Origin":"http://127.0.0.1:8080"}))
         FlaskServer.test_number += 1
         return htmlDoc
@@ -40,7 +40,11 @@ class FlaskServer(threading.Thread):
     @staticmethod
     @app.route("/nike")
     def update_nike():
-        resp = FlaskServer.app.make_response(rv=(TaskManager.get_nike_data(), 200, {"Access-Control-Allow-Origin":"http://127.0.0.1:8080"}))
+        resp = FlaskServer.app.make_response(
+            rv=(Core.get_nike_data(),
+            200,
+            {"Access-Control-Allow-Origin":"http://127.0.0.1:8080"}
+            ))
         return resp
 
     @staticmethod
