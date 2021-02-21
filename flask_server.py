@@ -48,6 +48,16 @@ class FlaskServer(threading.Thread):
         return resp
 
     @staticmethod
+    @app.route("/timeular")
+    def update_timeular():
+        resp = FlaskServer.app.make_response(
+            rv=(Core.get_timeular_data(),
+            200,
+            {"Access-Control-Allow-Origin":"http://127.0.0.1:8080"}
+            ))
+        return resp
+
+    @staticmethod
     def start():
         if FlaskServer.app is not None:
             FlaskServer.app.run(host='127.0.0.1', port=5000)

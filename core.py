@@ -164,3 +164,24 @@ class Core(threading.Thread):
                 }
             }
             return json.dumps(nike_dict)
+
+    @staticmethod
+    def get_timeular_data():
+        Core.log_core.debug("Fetching Timeular mock data!")
+        time_data = {}
+        time_data["current_activity"] = "Coding"
+        time_data["current_weekly_prod_hours"] = 20
+        time_data["weekly_prod_hour_goal"] = 40
+        activities_map = {
+                        "Class_Learning": 3.4,
+                        "Coding": 1.2,
+                        "Misc_Nonproductive": 0.4,
+                        "Misc_Prod": 2.1,
+                        "Morning_Routine": 1.0,
+                        "Projects": 2.2,
+                        "Resume_&_Job_Apps": 0.33,
+                        "Work_Out": 1.0
+                        }
+        time_data["activity_list"] = activities_map
+
+        return json.dumps(time_data)
