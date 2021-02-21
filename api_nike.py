@@ -144,9 +144,7 @@ class Nike():
 
         #Compare files greater than sunday stamp, total their values
         for file in Constants.PATH_TO_NIKE_ACTIVITIES.iterdir():
-            FileUnix = str(file).split("\\")
-            FileUnix = FileUnix[3].split(".")
-            FileUnix = int(FileUnix[0]) - PacificUnixConv
+            FileUnix = float(file.stem)
             if FileUnix > Nike.month_stamp:
                 curr_file = Path(file).open(mode='r')
                 curr_file = json.load(curr_file)
