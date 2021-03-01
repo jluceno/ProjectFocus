@@ -2,7 +2,8 @@ import sys
 import os
 import logging
 import threading
-from flask import Flask, render_template, jsonify
+import json
+from flask import Flask, render_template, jsonify, request
 from core import Core
 
 
@@ -12,9 +13,6 @@ class FlaskServer(threading.Thread):
     if getattr(sys, 'frozen', False):
         template_folder = os.path.join(sys._MEIPASS, 'templates')
         static_folder = os.path.join(sys._MEIPASS, 'static')
-
-        print(template_folder)
-        print(static_folder)
 
         app = Flask(__name__, template_folder=template_folder, static_folder=static_folder)
 
@@ -28,6 +26,12 @@ class FlaskServer(threading.Thread):
     @app.route("/")
     def render_main_display():
         return render_template("hfile.html")
+
+    @staticmethod
+    @app.route("/config", methods=['PUT'])
+    def config_pf():
+        Core.add_new_api(json.loads(request.data))
+        return 200
 
     @staticmethod
     @app.route("/update")

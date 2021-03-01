@@ -2,7 +2,7 @@ import sys
 
 from PyQt5.QtWidgets import QApplication
 
-from config_model import TaskManagerConfigModel
+from config_model import ConfigStore
 from pathlib import Path
 from constants import Constants
 from config_main import MainWindow
@@ -50,7 +50,7 @@ class TaskManager(threading.Thread):
             config_file = Constants.CONFIG_FILE_PATH.open(mode='r')
 
             try:
-                config_success = TaskManagerConfigModel.import_json(config_file.read())
+                config_success = ConfigStore.import_json(config_file.read())
             except json.JSONDecodeError:
                 config_success = False
 
@@ -70,8 +70,8 @@ class TaskManager(threading.Thread):
             if not config_path.exists():
                 config_path.mkdir()
             config_file = Constants.CONFIG_FILE_PATH.open('w')
-            config_file.write(TaskManagerConfigModel.generate_default_json())
-            TaskManagerConfigModel.init_default_values()
+            config_file.write(ConfigStore.generate_default_json())
+            ConfigStore.init_default_values()
             config_file.close()
 
         # Setup Nike API
@@ -80,8 +80,8 @@ class TaskManager(threading.Thread):
         nike_thread = threading.Thread(target=Nike.run_poll)
         TaskManager.polling_threads["Nike"] = nike_thread
 
-        if "Nike" in TaskManagerConfigModel.api_configs:
-            nike_config = TaskManagerConfigModel.api_configs["Nike"]
+        if "Nike" in ConfigStore.api_configs:
+            nike_config = ConfigStore.api_configs["Nike"]
             Nike.auth_key = nike_config["password"]
             TaskManager.polling_threads["Nike"].start()
 
@@ -120,15 +120,15 @@ class TaskManager(threading.Thread):
                 "goal_calories_month": command.goal_calories_month}
 
         if api_config_name is not None and api_config_data is not None:
-            TaskManagerConfigModel.api_configs[api_config_name] = api_config_data
+            ConfigStore.api_configs[api_config_name] = api_config_data
 
             # TODO save the information in a file
             config_file = Constants.CONFIG_FILE_PATH.open(mode='w')
-            config_file.write(TaskManagerConfigModel.to_json())
+            config_file.write(ConfigStore.to_json())
             config_file.close()
 
             # Run the Nike thread
-            nike_config = TaskManagerConfigModel.api_configs["Nike"]
+            nike_config = ConfigStore.api_configs["Nike"]
             Nike.auth_key = nike_config["password"]
             TaskManager.polling_threads["Nike"].start()
             return True
