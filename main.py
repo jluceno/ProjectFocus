@@ -14,7 +14,6 @@ def main():
     # Start the task manager thread
     main_log.debug("Starting core")
     tm = Core()
-    Core.config_class = win
     tm.start()
 
     # Start the flask server
