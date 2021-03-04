@@ -4,11 +4,14 @@ from constants import Constants
 from util import get_logging
 from pathlib import Path
 import logging
+import re
+import demjson
 
 
 class ConfigStore:
 
     api_configs = {}
+    mm_config = None
     config_log = None
 
     @staticmethod
@@ -45,6 +48,9 @@ class ConfigStore:
             ConfigStore.init_default_values()
             config_file.close()
 
+        if not ConfigStore.import_mm_config():
+            return False
+
         return True
 
     # Convert the model data into a json file
@@ -55,6 +61,26 @@ class ConfigStore:
             master_dict["api_configs"][api_config_key] = ConfigStore.api_configs[api_config_key]
 
         return json.dumps(master_dict)
+
+    # Loads the magic mirror config into a var
+    @staticmethod
+    def import_mm_config():
+        ConfigStore.config_log.debug("Loading the mm config")
+        try:
+            mm_config_file = Constants.MM_CONFIG_FILE_PATH.open("r")
+            mm_config_data = mm_config_file.read()
+
+            # Save the config var from the javascript config file
+            pattern = re.compile('(?<=var config =)([\s\S]*?)(;)')
+            parsed = pattern.findall(mm_config_data)
+            ConfigStore.mm_config = demjson.decode(parsed[0][0])
+        except:
+            mm_config_file.close()
+            ConfigStore.config_log.debug("Failed to load the mm config")
+            return False
+
+        ConfigStore.config_log.debug("Loaded the mm config")
+        return True
 
     # Pass in a json string to save the config model
     @staticmethod

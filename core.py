@@ -56,7 +56,7 @@ class Core(threading.Thread):
         Core.polling_threads["Nike"] = nike_thread
 
         if ConfigStore.find_api("Nike"):
-            nike_config = ConfigStore.find_api("Nike")
+            nike_config = ConfigStore.get_api("Nike")
             if not nike_config is None:
                 Nike.auth_key = nike_config["auth_data"]["authenticationKey"]
                 Core.polling_threads["Nike"].start()
