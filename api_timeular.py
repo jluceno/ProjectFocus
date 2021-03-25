@@ -14,17 +14,27 @@ class Timeular:
     API_SECRET = ""
     tempAuth = ""
     Auth = ""
-    AllActsReport = {}
+
+    AllActsReport = dict()
     AllActsArray = []
     AllActsWeekTotals = []
-    AllActsDayTotals = []
+    AllActsDayTotals = {}
+
     TodayDateStr = 0
     TomorrowDateStr = 0
     SundayStr = 0
     StartTrackTime = 0
     EndTrackTime = 0
+
     DayReport = 0
     WeekReport = 0
+
+    CurrTrackAct = 0
+    CurrTrackStart = 0
+    CurrTrackDur = 0
+
+    WeeklyProductiveHours = 0
+    WeeklyProductiveGoal = 0
 
     def __init__(self):
         super().__init__()
@@ -62,8 +72,6 @@ class Timeular:
             Timeular.AllActsReport[tempallacts['activities'][i]['id']] = tempallacts['activities'][i]['name']
             Timeular.AllActsArray.append(tempallacts['activities'][i]['name'])
             i += 1
-        for i in Timeular.AllActsArray:
-            print(i)
 
 # Shows currently tracked activity
     @staticmethod
@@ -79,9 +87,21 @@ class Timeular:
         tempcurract = json.loads(data.decode("utf-8"))
         if tempcurract['currentTracking'] != None:
             curract = tempcurract['currentTracking']['activityId']
-            print('Currently tracking: ' + Timeular.AllActsReport[curract])
+        #Active tracking function and durations need further testing
+            if Timeular.CurrTrackAct == Timeular.AllActsReport[curract]:
+                Timeular.CurrTrackDur = datetime.now() - Timeular.CurrTrackStart
+
+            else:
+                Timeular.CurrTrackAct = Timeular.AllActsReport[curract]
+                result = print('Currently tracking: ' + Timeular.AllActsReport[curract])
+                Timeular.CurrTrackStart = datetime.now()
+                return result
         else:
-            print('Not currently tracking')
+            Timeular.CurrTrackDur = ""
+            Timeular.CurrTrackStart = ""
+            Timeular.CurrTrackAct = ""
+            result = print('Not currently tracking')
+            return result
 
 # Generates a report containing all the Time Entries from inside the given time range. If some Time Entry exceeds
 # the report’s time range, only the matching part will be included. Requires Pro Timeular subscription
@@ -98,7 +118,6 @@ class Timeular:
         res = conn.getresponse()
         data = res.read()
         Timeular.WeekReport = json.loads(data.decode("utf-8"))
-        print(Timeular.WeekReport)
 
     # Generates JSON report of activity start/stop times for current day. +8 hour correction for PST
     @staticmethod
@@ -119,18 +138,24 @@ class Timeular:
 # Gathers totals of activities pulled from GenDayReport
     @staticmethod
     def DayTotals():
-
-        for i in Timeular.DayReport['timeEntries']:
+        for i in range(len(Timeular.AllActsArray)):
+            Timeular.AllActsDayTotals[Timeular.AllActsArray[i]] = 0
+        for i in range(len(Timeular.DayReport['timeEntries'])):
             StartTime = Timeular.DayReport['timeEntries'][i]['duration']['startedAt'][11:19]
+            StartTimeHour = int(StartTime[0:2])
             EndTime = Timeular.DayReport['timeEntries'][i]['duration']['stoppedAt'][11:19]
+            EndTimeHour = int(EndTime[0:2])
+            StartTime = str(StartTimeHour - 8) + StartTime[2:8]
+            if StartTimeHour > 8 and EndTimeHour < 10 :
+                EndTime = str(EndTimeHour + 24 - 8) + EndTime[2:8]
+            else:
+                EndTime = str(EndTimeHour - 8) + EndTime[2:8]
             FMT = '%H:%M:%S'
             Dur = datetime.strptime(EndTime, FMT) - datetime.strptime(StartTime, FMT)
-            i =+ 1
+            Timeular.AllActsDayTotals[Timeular.DayReport['timeEntries'][i]['activity']['name']] = Dur
+        for key, value in Timeular.AllActsDayTotals.items():
+            print(key + " : " + str(value))
 
-
-
-        for i in Timeular.AllActsArray:
-            print(i + ':' + Timeular.AllActsDayTotals[i])
 
 # Updates Timeular class time variables
 # time.struct_time (tm_year, tm_mon, tm_mday, tm_hour, tm_min, tm_sec, tm_wday, tm_yday, tm_isdst)
@@ -186,4 +211,27 @@ class Timeular:
             if TempTime[1] == 12:
                 TempTime[1] = 1
                 TempTime[0] = TempTime[0] + 1
+        if TempTime[2] < 10:
+            MdayZero = 0
+        else:
+            MdayZero = ''
         Timeular.TomorrowDateStr = f'{TempTime[0]}-{MonZero}{TempTime[1]}-{MdayZero}{Tomorrow}'
+
+
+##INTERFACE##
+#Call this method daily to pull data and populate variables
+    @staticmethod
+    def TimeularInitialize():
+        Timeular.UpdateTime()
+        Timeular.GenAllActs()
+        Timeular.GenDayReport()
+        Timeular.DayTotals()
+        Timeular.GenCurrAct()
+
+#Call this method every 30 min
+    @staticmethod
+    def Timeular30minUpdate():
+        Timeular.GenAllActs()
+        Timeular.GenDayReport()
+        Timeular.DayTotals()
+        Timeular.GenCurrAct()
