@@ -12,6 +12,8 @@ class ConfigStore:
 
     api_configs = {}
     mm_config = None
+    mm_config_start_pos = 0
+    mm_config_var_length = 0
     config_log = None
 
     @staticmethod
@@ -71,9 +73,13 @@ class ConfigStore:
             mm_config_data = mm_config_file.read()
 
             # Save the config var from the javascript config file
-            pattern = re.compile('(?<=var config =)([\s\S]*?)(;)')
-            parsed = pattern.findall(mm_config_data)
-            ConfigStore.mm_config = demjson.decode(parsed[0][0])
+            pattern = re.compile('(?<=var config =)([\s\S]*?);')
+            matches = pattern.search(mm_config_data)
+            match = matches.group(1)
+            ConfigStore.mm_config_start_pos = matches.start()
+            ConfigStore.mm_config_var_length = len(match)
+            ConfigStore.mm_config = demjson.decode(match)
+            
         except:
             mm_config_file.close()
             ConfigStore.config_log.debug("Failed to load the mm config")
@@ -81,6 +87,23 @@ class ConfigStore:
 
         ConfigStore.config_log.debug("Loaded the mm config")
         return True
+
+    # Writes the magic mirror config
+    @staticmethod
+    def export_mm_config():
+        mm_config_file = Constants.MM_CONFIG_FILE_PATH.open("r")
+        mm_config_data = mm_config_file.read()
+        mm_config_file.close()
+
+        mm_config_data = (
+           mm_config_data[:ConfigStore.mm_config_start_pos]
+         + json.dumps(ConfigStore.mm_config)
+         + mm_config_data[ConfigStore.mm_config_start_pos + ConfigStore.mm_config_var_length:]
+        )
+
+        mm_config_file = Constants.MM_CONFIG_FILE_PATH.open("w")
+        mm_config_file.write(mm_config_data)
+        mm_config_file.close()
 
     # Pass in a json string to save the config model
     @staticmethod
@@ -130,8 +153,13 @@ class ConfigStore:
     # Replaces an api if it already exists
     @staticmethod
     def add_api(api_name : str, api_config : dict):
-        ConfigStore.api_configs[api_name] = api_config
-        ConfigStore.save_to_file()
+        if api_name is "Nike":
+            ConfigStore.api_configs[api_name] = api_config
+            ConfigStore.save_to_file()
+        elif api_name is "Weather":
+            ConfigStore.configure_weather((api_config[0], api_config[1]))
+        else:
+            return False
         return True
 
     @staticmethod
@@ -144,3 +172,34 @@ class ConfigStore:
         config_file.write(ConfigStore.to_json())
         config_file.close()
 
+    @staticmethod
+    def configure_weather(weather_config_tuple : tuple):
+        
+        found_weather = False
+        weather_index = 0
+        configured_map = {
+                    'module': 'weather',
+                    'position': 'top_center',
+                    'config': 
+                    {
+                        'weatherProvider': 'openweathermap',
+                        'type': 'current',
+                        'apiKey': weather_config_tuple[0],
+                        'location': weather_config_tuple[1]
+                    }
+                }
+
+        for idx, module_config in enumerate(ConfigStore.mm_config['modules']):
+            if module_config['module'] == 'weather':
+                found_weather = True
+                weather_index = idx
+        
+        # If config entry does not exist
+        if not found_weather:
+            ConfigStore.mm_config['modules'].append(configured_map)
+
+        # If config entry does exist
+        else:
+            ConfigStore.mm_config['modules'][weather_index] = configured_map
+
+        ConfigStore.export_mm_config()

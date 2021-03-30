@@ -31,7 +31,7 @@ class FlaskServer(threading.Thread):
     @app.route("/config", methods=['PUT'])
     def config_pf():
         Core.add_new_api(json.loads(request.data))
-        return 200
+        return "200"
 
     @staticmethod
     @app.route("/update")

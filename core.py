@@ -83,11 +83,14 @@ class Core(threading.Thread):
     def add_new_api(command : dict):
         api_config_name = None
         api_config_data = None
-        ConfigStore.add_api("Nike", command["NikeCommand"])
-        Nike.auth_key = ConfigStore.get_api("Nike")["auth_data"]["authenticationKey"]
-        
-        if (not Core.polling_threads["Nike"].is_alive()):
-            Core.polling_threads["Nike"].start()
+
+        if "NikeCommand" in command:
+            ConfigStore.add_api("Nike", command["NikeCommand"])
+            Nike.auth_key = ConfigStore.get_api("Nike")["auth_data"]["authenticationKey"]
+            if (not Core.polling_threads["Nike"].is_alive()):
+                Core.polling_threads["Nike"].start()
+        elif "WeatherCommand" in command:
+            ConfigStore.add_api("Weather", command["WeatherCommand"])
 
     @staticmethod
     def _command_function(command):
