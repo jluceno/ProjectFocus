@@ -5,3 +5,4 @@ pip
 setuptools
 flask
 httpx
+demjson
