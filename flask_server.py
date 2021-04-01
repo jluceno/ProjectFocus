@@ -42,10 +42,10 @@ class FlaskServer(threading.Thread):
         return htmlDoc
 
     @staticmethod
-    @app.route("/nike")
-    def update_nike():
+    @app.route("/strava")
+    def update_strava():
         resp = FlaskServer.app.make_response(
-            rv=(Core.get_nike_data(),
+            rv=(Core.get_strava_data(),
             200,
             {"Access-Control-Allow-Origin":"http://127.0.0.1:8080"}
             ))

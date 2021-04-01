@@ -6,9 +6,8 @@ from config_model import ConfigStore
 from pathlib import Path
 from constants import Constants
 from config_main import MainWindow
-from api_nike import Nike
+from api_strava import Strava
 from datetime import datetime
-from config_classes import CommandMessage, CommandMessageNike
 
 import logging
 import time
@@ -49,17 +48,17 @@ class Core(threading.Thread):
         if startup_result is False:
             raise Exception("Cant load the config file")
 
-        # Setup Nike API
+        # Setup Strava API
         # TODO have a cleaner way of doing this
-        Core.log_core.debug("Starting Nike thread")
-        nike_thread = threading.Thread(target=Nike.run_poll)
-        Core.polling_threads["Nike"] = nike_thread
+        Core.log_core.debug("Starting Strava thread")
+        strava_thread = threading.Thread(target=Strava.run_poll)
+        Core.polling_threads["Strava"] = strava_thread
 
-        if ConfigStore.find_api("Nike"):
-            nike_config = ConfigStore.get_api("Nike")
-            if not nike_config is None:
-                Nike.auth_key = nike_config["auth_data"]["authenticationKey"]
-                Core.polling_threads["Nike"].start()
+        if ConfigStore.find_api("Strava"):
+            strava_config = ConfigStore.get_api("Strava")
+            if not strava_config is None:
+                Strava.auth_key = strava_config["auth_data"]["authenticationKey"]
+                Core.polling_threads["Strava"].start()
 
 
     @staticmethod
@@ -84,11 +83,11 @@ class Core(threading.Thread):
         api_config_name = None
         api_config_data = None
 
-        if "NikeCommand" in command:
-            ConfigStore.add_api("Nike", command["NikeCommand"])
-            Nike.auth_key = ConfigStore.get_api("Nike")["auth_data"]["authenticationKey"]
-            if (not Core.polling_threads["Nike"].is_alive()):
-                Core.polling_threads["Nike"].start()
+        if "StravaCommand" in command:
+            ConfigStore.add_api("Strava", command["StravaCommand"])
+            Strava.auth_key = ConfigStore.get_api("Strava")["auth_data"]["authenticationKey"]
+            if (not Core.polling_threads["Strava"].is_alive()):
+                Core.polling_threads["Strava"].start()
         elif "WeatherCommand" in command:
             ConfigStore.add_api("Weather", command["WeatherCommand"])
 
@@ -99,33 +98,33 @@ class Core(threading.Thread):
             Core.log_core.error("Command from config UI not recognized")
 
     @staticmethod
-    def get_nike_data():
-        if "Nike" in Core.polling_threads:
-            Core.log_core.debug("Fetching Nike data!")
-            nike_data = Nike.WeekMonthTotals()
-            nike_dict = None
+    def get_strava_data():
+        if "Strava" in Core.polling_threads:
+            Core.log_core.debug("Fetching Strava data!")
+            strava_data = Strava.WeekMonthTotals()
+            strava_dict = None
            
-            if ConfigStore.find_api("Nike") is True:
-                nike_config = ConfigStore.get_api("Nike")
+            if ConfigStore.find_api("Strava") is True:
+                strava_config = ConfigStore.get_api("Strava")
                 
-                nike_dict = {"weekly_data": {
-                    "mile_goal" : nike_config["weekly_goals"]["mile_goal"],
-                    "calorie_goal" : nike_config["weekly_goals"]["calorie_goal"],
-                    "current_miles" : nike_data[0],
-                    "current_calories" : nike_data[1]
+                strava_dict = {"weekly_data": {
+                    "mile_goal" : strava_config["weekly_goals"]["mile_goal"],
+                    "calorie_goal" : strava_config["weekly_goals"]["calorie_goal"],
+                    "current_miles" : strava_data[0],
+                    "current_calories" : strava_data[1]
                     },
                     "monthly_data": {
-                        "mile_goal" : nike_config["monthly_goals"]["mile_goal"],
-                        "calorie_goal": nike_config["monthly_goals"]["calorie_goal"],
-                        "current_miles" : nike_data[2],
-                        "current_calories" : nike_data[3]
+                        "mile_goal" : strava_config["monthly_goals"]["mile_goal"],
+                        "calorie_goal": strava_config["monthly_goals"]["calorie_goal"],
+                        "current_miles" : strava_data[2],
+                        "current_calories" : strava_data[3]
                     },
                     "totals": {
-                        "total_miles": Nike.TotalMiles(),
-                        "total_calories": Nike.TotalCals()
+                        "total_miles": Strava.TotalMiles(),
+                        "total_calories": Strava.TotalCals()
                     }
                 }
-            return json.dumps(nike_dict)
+            return json.dumps(strava_dict)
 
     @staticmethod
     def get_timeular_data():
