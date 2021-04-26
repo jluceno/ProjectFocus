@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <form name="myForm" id="myForm" class="myForm" onsubmit="alert('submit!');
+    return validateForm()" method="post">
+
+        <div class="StravaCommand">
+            <div class ="auth_data">
+                <label for="username">Username: </label><br>
+                <input id="username" name="username" type="username" /><br><br> 
+                <label for="apiKey">API Key: </label><br>
+                <input id="apiKey" name="apiKey" type="apiKey" /><br><br>
+                <label for="authenticationKey">Authentication Key: </label><br>
+                <input id="authenticationKey" name="authenticationKey" type="authenticationKey" /><br><br>
+            </div>
+            <div class="weekly_goals">
+                <label for="weekly_mile_goal">Weekly Mile Goal: </label><br>
+                <input id="weekly_mile_goal" name="weekly_mile_goal" type="weekly_mile_goal" /><br><br>
+                <label for="weekly_calorie_goal">Weekly Calorie Goal: </label><br>
+                <input id="weekly_calorie_goal" name="weekly_calorie_goal" type="weekly_calorie_goal" /><br><br>
+            </div>
+            <div class="monthly_goals">
+                <label for="monthly_mile_goal">Monthly Mile Goal: </label><br>
+                <input id="monthly_mile_goal" name="monthly_mile_goal" type="monthly_mile_goal" /><br><br>
+                <label for="monthly_calorie_goal">Monthly Calorie Goal: </label><br>
+                <input id="monthly_calorie_goal" name="monthly_calorie_goal" type="monthly_calorie_goal" /><br><br>
+            </div>
+            <button type ="submit" id="btn">Submit</button>
+        </div>
+
+
+    </form>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="put_request.js"></script>
+
+</body>
+</html>
